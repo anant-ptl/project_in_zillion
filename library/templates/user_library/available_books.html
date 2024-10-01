@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library - Available Books</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        /* Navbar container */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 15px 30px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+        }
+        
+        /* Left side buttons */
+        .navbar .nav-left {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Buttons style */
+        .navbar button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        /* Button hover effect */
+        .navbar button:hover {
+            background-color: #45a049;
+        }
+        
+        /* Right side logout button */
+        .navbar .nav-right button {
+            background-color: #f44336;
+            margin-right: 7vh;
+        }
+        
+        /* Table styling */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #333;
+            color: white;
+        }
+        
+        /* Button inside the table */
+        .request-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .request-btn:hover {
+            background-color: #45a049;
+        }
+        
+        /* Center content */
+        .content {
+            padding-top: 100px;
+        }
+        
+        /* Message styling */
+        .message {
+            width: 80%;
+            margin: 0 auto 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .message.success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .message.error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
+        .message.info {
+            background-color: #d9edf7;
+            color: #31708f;
+            border: 1px solid #bce8f1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>{{user}}</h1>
+
+    
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{% url 'available_books' %}"><button >Available Books</button></a>
+            <a href="{% url 'assigned_books' %}"><button>Assigned Books</button></a>
+        </div>
+        
+        <div class="nav-right">
+            <button>Logout</button>
+        </div>
+    </div>
+    
+    <div class="content">
+        <h1 style="text-align: center;">Available Books</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Author</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>
+                        <form action="{% url 'available_books' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="book_name" value="{{ book.title }}">
+                            <button type="submit" class="request-btn">Request Book</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* General body styling */
+        body {
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Container to center the form */
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        /* Center the headings */
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Form elements spacing */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Styling for input fields */
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Button styling */
+        button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling for the alert messages */
+        .alert {
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 20px;
+            color: #31708f;
+            background-color: #e7f3fe;
+            border: 1px solid #bce8f1;
+            border-radius: 6px;
+        }
+
+        /* Radio button styling */
+        .form-group input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        /* Links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsiveness for smaller screens */
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px;
+                max-width: 100%;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            button {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form method="POST" action="{% url 'login_page' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Display messages -->
+        {% if messages %}
+        <div class="alert">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <p>Don't have an account? <a href="{% url 'registration' %}">Register here</a></p>
+    </div>
+</body>
+
+</html>

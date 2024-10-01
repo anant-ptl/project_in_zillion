@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #35424a;
+            color: #ffffff;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            border-bottom: 2px solid #35424a;
+            padding-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            margin: 10px 0 5px;
+        }
+
+        form input, select {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background: #35424a;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #35424a;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Librarian Dashboard</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'stock_status' %}">View Stock</a></li>
+                    <li><a href="{% url 'approved_request' %}">Approve Requests</a></li>
+                    <li><a href="{% url 'assign_books' %}">View Assigned Books</a></li>
+                    <li><a href="{% url 'logout' %}"><button>Logout</button></a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section id="add-book">
+                <h2>Add New Book</h2>
+                <form action="{% url 'librarian' %}" method="POST">
+                    {% csrf_token %}
+                    <label for="book-title">Book Title:</label>
+                    <input type="text" name="title" required>
+
+                    <label for="book-author">Author:</label>
+                    <input type="text" name="author" required>
+
+
+                    <label for="total-copies">Total Copies:</label>
+                    <input type="number" name="copies" required>
+
+                    <label for="created-at">Created At:</label>
+                    <input type="date" name="date" required>
+
+                    <button type="submit">Add Book</button>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

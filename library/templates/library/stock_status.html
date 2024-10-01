@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #35424a;
+            color: #ffffff;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: black;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            border-bottom: 2px solid #35424a;
+            padding-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            margin: 10px 0 5px;
+        }
+
+        form input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background: #35424a;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2c3e50;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Librarian Dashboard</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'stock_status' %}">View Stock</a></li>
+                    <li><a href="{% url 'approved_request' %}">Approve Requests</a></li>
+                    <li><a href="{% url 'assign_books' %}">View Assigned Books</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="container">
+                <h2 class="my-4">Check Book Stock and Status</h2>
+            
+                <!-- Dropdown form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="book">Select a Book:</label>
+                        <select name="book" id="book" class="form-control">
+                            <option value="">-- Select Book --</option>
+                            {% for book in books %}
+                                <option value="{{ book.title }}">{{ book.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Check Status</button>
+                </form>
+            
+                {% if selected_book %}
+                <h4 class="mt-4">Book Information:</h4>
+                <h3>{{selected_book.title}} :- {{selected_book.total_copies}} total copies</h3>
+                <h3>{{selected_book.title}} :- {{selected_book.available_copies}} available copies</h3>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+    
+</body>
+
+</html>
