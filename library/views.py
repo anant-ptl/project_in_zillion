@@ -1,15 +1,11 @@
 from django.shortcuts import render
 
-# Create your views here.
-from multiprocessing import AuthenticationError
 from django.shortcuts import render, redirect
-from library.templates import *
 from .models import *
 
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 from django.contrib.auth import authenticate,login,logout
 
 
@@ -55,7 +51,12 @@ def login_page(request):
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-        user_type = UserProfile.objects.get(user = user)
+        try:
+            user_type = UserProfile.objects.get(user=user)
+        except UserProfile.DoesNotExist:
+            messages.error(request, 'User profile not found!')
+            return redirect('login_page')
+        
         if user is not None:
             login(request, user)
             if user_type.is_librarian:
@@ -70,14 +71,12 @@ def login_page(request):
 
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been successfully logged out.')
     return redirect('login_page')
 
 
 
 
-
-# for librarina
+# for librarina ---------------------------------------------------------------------------------------------
 
 @login_required(login_url='login_page')
 def librarian_page(request):
@@ -89,29 +88,32 @@ def librarian_page(request):
         created_at = request.POST.get('date')
 
         if Book.objects.filter(title=book).exists():
-            messages.error(request, 'Username already taken')
-
-        user = Book.objects.create(
-                title=book,
-                author=author,
-                total_copies=copies,
-                available_copies=copies,
-                created_at=created_at
+            messages.error(request, 'Book with this title already exists.')
+        else:
+            book = Book.objects.create(
+            title=book,
+            author=author,
+            total_copies=copies,
+            available_copies=copies,
+            created_at=timezone.now()
             )
-        return redirect('librarian')
+            book.save()
+            messages.success(request, "Book added successfully!")
+
     return render(request, "librarian.html")
+
 
 
 @login_required(login_url='login_page')
 def stock_status(request):
-    user = request.user
-    print(user)
+
     books = Book.objects.all()
     selected_book = None
 
     if request.method == "POST":
-        book_title = request.POST.get("book")
-        selected_book = Book.objects.get(title=book_title)
+        book_id = request.POST.get("book")
+        selected_book = Book.objects.get(title=book_id)
+
     
     return render(request, 'library/stock_status.html', {
         'books': books,
@@ -122,8 +124,6 @@ def stock_status(request):
 @login_required(login_url='login_page')
 def approved_request(request):
     book_requests = BookRequest.objects.filter(approved=False)
-    user = request.user
-    print(user)
 
     if request.method == 'POST':
         request_id = request.POST.get('request_id')
@@ -135,7 +135,6 @@ def approved_request(request):
                 book_request.book.available_copies -= 1
                 book_request.book.save()
 
-                # Set renewal date to 45 days from now
                 book_request.renewal_date = (timezone.now() + timedelta(days=45)).date()
                 book_request.save()
 
@@ -153,33 +152,12 @@ def approved_request(request):
 @login_required(login_url='login_page')
 def assign_books(request):
     books = BookRequest.objects.filter(approved = True)
-    print(books)
-
     return render(request, 'library/assign_books.html', {'books' : books})
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# for normal user
+# for normal user------------------------------------------------------------------------------------------------------
 
 
 @login_required(login_url='login_page')
@@ -190,13 +168,12 @@ def normal_user(request):
 @login_required(login_url='login_page')
 def available_books(request):
     books = Book.objects.all()
-    user = request.user
-    print(user)
     
+    user = request.user
+
     if request.method == 'POST':
         book_name = request.POST.get('book_name')
-        user = request.user
-        
+
         try:
             book = Book.objects.get(title=book_name)
             
@@ -207,10 +184,12 @@ def available_books(request):
                 BookRequest.objects.create(user=user, book=book)
                 messages.success(request, f"Book '{book.title}' has been requested successfully.")
         
+        except Book.DoesNotExist:
+            messages.error(request, "The specified book does not exist.")
         except Exception as e:
             messages.error(request, "An unexpected error occurred. Please try again later.")
 
-    return render(request, 'user_library/available_books.html', {'books': books, 'user':user})
+    return render(request, 'user_library/available_books.html', {'books': books, 'user': user})
 
 
 @login_required(login_url='login_page')

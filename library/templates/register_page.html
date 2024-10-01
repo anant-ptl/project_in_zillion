@@ -31,8 +31,16 @@
         /* Center the headings */
         h2 {
             font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #333;
+            text-align: center;
+        }
+
+        /* Styling for the main title */
+        .main-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #007bff; /* You can change the color as needed */
             text-align: center;
         }
 
@@ -121,6 +129,7 @@
 
 <body>
     <div class="container">
+        <h1 class="main-title">Library Management System</h1>
         <h2>Register</h2>
         <form method="POST" action="{% url 'registration' %}">
             {% csrf_token %}
