@@ -37,6 +37,3 @@ It allows **librarians** to manage books and **users** to borrow/request them, w
 - `librarian_page`, `stock_status`, `approved_request`, `assign_books` → Librarian module  
 - `normal_user`, `available_books`, `assigned_books` → User module
 
-
-
--gement
